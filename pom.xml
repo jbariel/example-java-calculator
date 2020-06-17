@@ -9,7 +9,7 @@
     <properties>
         <java.version>11</java.version>
 
-        <proj.mainClass>com.jbariel.example.Calculator</proj.mainClass>
+        <proj.mainClass>com.jbariel.example.calculator.Calculator</proj.mainClass>
 
         <dep.junit.version>5.5.2</dep.junit.version>
         <dep.slf4j-simple.version>1.7.29</dep.slf4j-simple.version>
