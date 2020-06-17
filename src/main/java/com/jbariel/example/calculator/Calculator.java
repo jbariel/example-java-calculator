@@ -1,7 +1,9 @@
 package com.jbariel.example.calculator;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -21,32 +23,45 @@ public class Calculator {
             LOG.error(e.getLocalizedMessage(), e);
             throw e;
         }
-        doAction(argStrs);
-    }
+        // get the action out
+        String actor = argStrs.get(0);
+        final List<String> strValues = argStrs.subList(1, argStrs.size());
 
-    protected static void doAction(final List<String> args) {
-        String actor = args.get(0);
         switch (actor.toLowerCase()) {
             case "+":
             case "add":
                 LOG.info("We're gonna add...");
+                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::add));
                 break;
             case "-":
             case "subtract":
                 LOG.info("We're gonna subtract...");
+                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::subtract));
                 break;
             case "*":
             case "multiply":
                 LOG.info("We're gonna multiply...");
+                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::multiply));
                 break;
             case "/":
             case "divide":
                 LOG.info("We're gonna divide...");
+                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::divide));
                 break;
             default:
                 throw new IllegalArgumentException(
                         "Must provide a supported actor: ['+','-','*','/','add','subtract','multiply','divide'");
         }
+    }
+
+    protected static BigDecimal getResultOfAction(final List<String> paramsToConvert,
+            final BinaryOperator<BigDecimal> op) {
+        if (paramsToConvert.size() < 2) {
+            throw new IllegalArgumentException(
+                    "Must provide at least two values, one to start and one to act on (min)");
+        }
+        final BigDecimal initValue = new BigDecimal(paramsToConvert.get(0));
+        return paramsToConvert.subList(1, paramsToConvert.size()).stream().map(BigDecimal::new).reduce(initValue, op);
     }
 
 }
