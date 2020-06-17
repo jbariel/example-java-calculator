@@ -11,7 +11,22 @@ import org.slf4j.LoggerFactory;
 
 public class Calculator {
 
-    public static final Logger LOG = LoggerFactory.getLogger(Calculator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Calculator.class);
+
+    public static enum OPS {
+        ADD(BigDecimal::add), SUBTRACT(BigDecimal::subtract), MULTIPLY(BigDecimal::multiply),
+        DIVIDE(BigDecimal::divide);
+
+        private BinaryOperator<BigDecimal> op;
+
+        OPS(BinaryOperator<BigDecimal> op) {
+            this.op = op;
+        }
+
+        public BinaryOperator<BigDecimal> op() {
+            return this.op;
+        }
+    };
 
     public static void main(final String[] args) {
         List<String> argStrs = Arrays.asList(args);
@@ -23,35 +38,39 @@ public class Calculator {
             LOG.error(e.getLocalizedMessage(), e);
             throw e;
         }
-        // get the action out
-        String actor = argStrs.get(0);
-        final List<String> strValues = argStrs.subList(1, argStrs.size());
+        // Log out result
+        LOG.info("RESULT: " + getResultOfAction(argStrs.subList(1, argStrs.size()), getOperation(argStrs.get(0)).op()));
 
+    }
+
+    protected static OPS getOperation(final String actor) {
+        OPS op = null;
         switch (actor.toLowerCase()) {
             case "+":
             case "add":
                 LOG.info("We're gonna add...");
-                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::add));
+                op = OPS.ADD;
                 break;
             case "-":
             case "subtract":
                 LOG.info("We're gonna subtract...");
-                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::subtract));
+                op = OPS.SUBTRACT;
                 break;
             case "*":
             case "multiply":
                 LOG.info("We're gonna multiply...");
-                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::multiply));
+                op = OPS.MULTIPLY;
                 break;
             case "/":
             case "divide":
                 LOG.info("We're gonna divide...");
-                LOG.info("RESULT: " + getResultOfAction(strValues, BigDecimal::divide));
+                op = OPS.DIVIDE;
                 break;
             default:
                 throw new IllegalArgumentException(
                         "Must provide a supported actor: ['+','-','*','/','add','subtract','multiply','divide'");
         }
+        return op;
     }
 
     protected static BigDecimal getResultOfAction(final List<String> paramsToConvert,

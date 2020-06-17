@@ -67,8 +67,24 @@ public class CalculatorTest {
     }
 
     @Test
+    public void testOp() {
+        assertEquals(Calculator.OPS.ADD, Calculator.getOperation("+"));
+        assertEquals(Calculator.OPS.ADD, Calculator.getOperation("add"));
+        assertEquals(Calculator.OPS.ADD, Calculator.getOperation("ADD"));
+        assertEquals(Calculator.OPS.SUBTRACT, Calculator.getOperation("-"));
+        assertEquals(Calculator.OPS.SUBTRACT, Calculator.getOperation("subtract"));
+        assertEquals(Calculator.OPS.SUBTRACT, Calculator.getOperation("SUBTRACT"));
+        assertEquals(Calculator.OPS.MULTIPLY, Calculator.getOperation("*"));
+        assertEquals(Calculator.OPS.MULTIPLY, Calculator.getOperation("multiply"));
+        assertEquals(Calculator.OPS.MULTIPLY, Calculator.getOperation("MULTIPLY"));
+        assertEquals(Calculator.OPS.DIVIDE, Calculator.getOperation("/"));
+        assertEquals(Calculator.OPS.DIVIDE, Calculator.getOperation("divide"));
+        assertEquals(Calculator.OPS.DIVIDE, Calculator.getOperation("DIVIDE"));
+    }
+
+    @Test
     public void testAddFxn() {
-        final BinaryOperator<BigDecimal> op = BigDecimal::add;
+        final BinaryOperator<BigDecimal> op = Calculator.OPS.ADD.op();
         doTestGetResultOfAction(new BigDecimal("2"), op, "1", "1");
         doTestGetResultOfAction(new BigDecimal("20"), op, "10", "5", "3", "2");
         doTestGetResultOfAction(new BigDecimal("-2"), op, "-1", "-1");
@@ -79,7 +95,7 @@ public class CalculatorTest {
 
     @Test
     public void testSubtractFxn() {
-        final BinaryOperator<BigDecimal> op = BigDecimal::subtract;
+        final BinaryOperator<BigDecimal> op = Calculator.OPS.SUBTRACT.op();
         doTestGetResultOfAction(new BigDecimal("0"), op, "1", "1");
         doTestGetResultOfAction(new BigDecimal("0"), op, "10", "5", "3", "2");
         doTestGetResultOfAction(new BigDecimal("0"), op, "-1", "-1");
@@ -90,7 +106,7 @@ public class CalculatorTest {
 
     @Test
     public void testMultiplyFxn() {
-        final BinaryOperator<BigDecimal> op = BigDecimal::multiply;
+        final BinaryOperator<BigDecimal> op = Calculator.OPS.MULTIPLY.op();
         doTestGetResultOfAction(new BigDecimal("1"), op, "1", "1");
         doTestGetResultOfAction(new BigDecimal("300"), op, "10", "5", "3", "2");
         doTestGetResultOfAction(new BigDecimal("1"), op, "-1", "-1");
@@ -101,7 +117,7 @@ public class CalculatorTest {
 
     @Test
     public void testDivideFxn() {
-        final BinaryOperator<BigDecimal> op = BigDecimal::divide;
+        final BinaryOperator<BigDecimal> op = Calculator.OPS.DIVIDE.op();
         doTestGetResultOfAction(new BigDecimal("1"), op, "1", "1");
         doTestGetResultOfAction(new BigDecimal("1"), op, "10", "5", "2");
         doTestGetResultOfAction(new BigDecimal("1"), op, "-1", "-1");
