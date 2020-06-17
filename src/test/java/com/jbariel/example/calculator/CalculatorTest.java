@@ -2,6 +2,8 @@ package com.jbariel.example.calculator;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -23,24 +25,23 @@ public class CalculatorTest {
 
     @Test
     public void testActorSymbolArg() {
-        shouldThrowIllegalArgumentException(new String[] { "%", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "+", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "-", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "*", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "/", "1", "1" });
+        checkActor("%", false);
+        Stream.of("+", "-", "*", "/").forEach(s -> checkActor(s, true));
     }
 
     @Test
     public void testActorWordArg() {
-        shouldThrowIllegalArgumentException(new String[] { "modulus", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "add", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "ADD", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "subtract", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "SUBTRACT", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "multiply", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "MULTIPLY", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "divide", "1", "1" });
-        shouldNotThrowIllegalArgumentException(new String[] { "DIVIDE", "1", "1" });
+        checkActor("modulus", false);
+        Stream.of("add", "ADD", "subtract", "SUBTRACT", "multiply", "MULTIPLY", "divide", "DIVIDE")
+                .forEach(s -> checkActor(s, true));
+    }
+
+    protected void checkActor(String actor, boolean isValid) {
+        if (isValid) {
+            shouldNotThrowIllegalArgumentException(new String[] { actor, "1", "1" });
+        } else {
+            shouldThrowIllegalArgumentException(new String[] { actor, "1", "1" });
+        }
     }
 
     protected void shouldThrowIllegalArgumentException(String[] args) {
